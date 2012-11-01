@@ -1,12 +1,11 @@
 <?php
 require_once("Util.php");
-define("BASE_DIR", dirname(dirname(dirname(__FILE__))));
-define("DS", DIRECTORY_SEPARATOR);
+$PROTO_BASE_DIR = dirname(dirname(__FILE__));
 $loaders = array(
-	new ClassLoader("ProtoMapper\Binds", BASE_DIR),
-	new ClassLoader("ProtoMapper\Config", BASE_DIR),
-	new ClassLoader("ProtoMapper\Definition", BASE_DIR),
-	new ClassLoader("ProtoMapper\Parsers", BASE_DIR)
+	new ClassLoader("ProtoMapper\Binds", $PROTO_BASE_DIR),
+	new ClassLoader("ProtoMapper\Config", $PROTO_BASE_DIR),
+	new ClassLoader("ProtoMapper\Definition", $PROTO_BASE_DIR),
+	new ClassLoader("ProtoMapper\Parsers", $PROTO_BASE_DIR)
 );
 foreach ($loaders as $loader) {
 	$loader->register();

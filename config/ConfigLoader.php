@@ -3,6 +3,12 @@ namespace ProtoMapper\Config;
 use ProtoMapper\Definition\ProtocolDefinition as ProtocolDefinition;
 use ProtoMapper\Binds\ProtocolObject as ProtocolObject;
 use ProtoMapper\Binds\ProtocolBind as ProtocolBind;
+
+/**
+* Exception thrown when loading invalid configuration files
+*/
+class ConfigurationLoaderException extends \Exception{}
+
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -18,7 +24,30 @@ use ProtoMapper\Binds\ProtocolBind as ProtocolBind;
  */
 class ConfigLoader
 {
-    function createBinding(\SimpleXmlElement $bind)
+    private $protocols;
+    
+    public function load($protocolConfigLocation)
+    {
+        if(!file_exists($protocolConfigLocation))
+        {
+            throw new ConfigurationLoaderException("Web configuration file: '" . $protocolConfigLocation . " could not be found!");
+        }        
+        //LOAD: Load protocols for parsing data
+        $protocol_xml = simplexml_load_file($protocolConfigLocation);
+        $this->protocols = $this->parseProtocols($protocol_xml);
+    }
+    
+    /**
+     * Gets a protocol definition configured for use when requesting information regarding user details
+     * @param string $name The name of the protocol to fetch
+     * @return ProtocolDefinition the protocol definition matching the data type
+     */
+    public function getProtocolDefinition($name, $type)
+    {
+        return $this->protocols[$name][$type];
+    }
+    
+    protected function createBinding(\SimpleXmlElement $bind)
     {
         return new ProtocolBind
         (
@@ -38,7 +67,7 @@ class ConfigLoader
      * @param \SimpleXmlElement $mapping the list of mappings to parse
      * @return \Rexume\Config\ProtocolMapping The created protocol mapping
      */
-    function createMapping(\SimpleXmlElement $mapping)
+    protected function createMapping(\SimpleXmlElement $mapping)
     {
         $protocol = null;
         $bindings = array_map(array($this, 'createBinding'), $mapping->xpath('bind'));
@@ -88,7 +117,6 @@ class ConfigLoader
                 $result[$protocol->name()][$protocol->contentType()] = $protocol;
             }
         }
-        //var_dump($result['LinkedIn']['Data']->targets()[0]->bindings());
         return $result;
     }
     
@@ -100,7 +128,7 @@ class ConfigLoader
      * @param string $parser the name of the parser class to use
      * @return \Rexume\Config\ProtocolDefinition the created protocol defintion
      */
-    public function parseProtocol($name, $type, $readDef, $parser)
+    protected function parseProtocol($name, $type, $readDef, $parser)
     {
         $objects = array_map(array($this, 'createMapping'), $readDef->xpath('object'));
         $mappings = array_map(array($this, 'createMapping'), $readDef->xpath('mappings/mapping'));        

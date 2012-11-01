@@ -1,2 +1,2 @@
 <?php
-include "./tests/ConfigLoaderTest.php";
+include "./tests/config/ConfigLoaderTest.php";
