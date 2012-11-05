@@ -6,8 +6,8 @@ The purpose of this project is two-fold.<br/>
 2.	An ORM for establishing various kinds of mappings between objects and other objects, xml documents and objects, etc.
 
 ##synopsis##
-1.	See http://www.github.com/dansam100/protomapper/tree/master/tests/config/ConfigLoaderTest.php for a sample of how to initialize protomapper from configuration.<br/>
-2.	See http://www.github.com/dansam100/protomapper/tree/master/tests/config/ProtocolDefinitionTest.php to see how parsing works.<br/>
+1.	See <http://www.github.com/dansam100/protomapper/tree/master/tests/config/ConfigLoaderTest.php> for a sample of how to initialize protomapper from configuration.
+2.	See <http://www.github.com/dansam100/protomapper/tree/master/tests/config/ProtocolDefinitionTest.php> to see how parsing works.
 
 For a more in-depth view, take a look at the parsers which do the real work under: http://www.github.com/dansam100/protomapper/tree/master/parsers/
 
@@ -31,7 +31,7 @@ With this in mind, we can write a number of parsers for multiple document types,
 protomapper xml configuration file and referencing the right parsers.
 
 ###current state###
-Currently, protomapper only works for parsing xml documents since I have only implemented a simple xml parser (http://www.github.com/dansam100/protomapper/tree/master/parsers/XMLSimpleParser.php).
+Currently, protomapper only works for parsing xml documents since I have only implemented a simple xml parser (<http://www.github.com/dansam100/protomapper/tree/master/parsers/XMLSimpleParser.php>).
 This works very well up to the inclusion of many mini sub parsers to help with the data mapping.
 
 I have code in there to do recursive reads and parsing for nested objects but that does not work in the current checkin. I will update that in the future.

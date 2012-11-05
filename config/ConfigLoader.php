@@ -105,7 +105,7 @@ class ConfigLoader
             foreach($protocolDefs->read as $readDef){
                 $protocol = $this->parseProtocol
                     (
-                        (string)$protocolDef['name'], 
+                        (string)$protocolDef['name'],
                         (string)$protocolDef['type'], 
                         $readDef,
                         (string)$protocolDef['parser']

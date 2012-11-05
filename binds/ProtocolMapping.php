@@ -3,8 +3,10 @@ namespace ProtoMapper\Binds;
 
 class ProtocolMapping
 {
+	const DEFAULT_TYPE = 'string';
+    	
     protected $name;
-    protected $type = 'string';
+    protected $type;
     protected $protocol;
     /**
      * A list of name/value bindings
@@ -29,7 +31,12 @@ class ProtocolMapping
     public function __construct($name, $type, $parent = null, $protocol = null, $bindings = array()) 
     {
         $this->name = $name;
-        $this->type = $type;
+		if(!empty($type)){
+        	$this->type = $type;
+		}
+		else{
+			$this->type = self::DEFAULT_TYPE;
+		}
         $this->parent = $parent;
         $this->protocol = $protocol;
         $this->bindings = array();

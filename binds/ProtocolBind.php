@@ -2,6 +2,8 @@
 namespace ProtoMapper\Binds;
 class ProtocolBind
 {
+    const DEFAULT_TYPE = 'string';
+		
     protected $name;
     protected $source;
     protected $target;
@@ -10,7 +12,7 @@ class ProtocolBind
      * @var IValueParser $parser 
      */
     protected $parser;
-    protected $type = 'string';
+    protected $type;
     /**
      *
      * @var $type 
@@ -41,6 +43,9 @@ class ProtocolBind
         if(!empty($type)){
             $this->type = $type;
         }
+		else{
+			$this->type = self::DEFAULT_TYPE;
+		}
         if(empty($name)){
             $this->name = $source;
         }
@@ -99,6 +104,11 @@ class ProtocolBind
     public function target()
     {
         return $this->target;
+    }
+	
+	public function parser()
+    {
+        return $this->parser;
     }
     
     public function bindings()

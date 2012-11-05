@@ -18,6 +18,7 @@ class ConfigLoaderTest extends \PHPUnit_Framework_TestCase {
     protected function setUp() {
         //BEGIN: test loading using the configuration file in "/examples/protocol.config.xml"
         $this->object = new ConfigLoader();
+		$this->xmlFile = '..//examples//protocol.config.xml';
     }
 
     /**
@@ -30,11 +31,40 @@ class ConfigLoaderTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @covers ProtoMapper\Config\ConfigLoader::testParseProtocols
-     * @todo   Implement testParse().
+     * @todo   Implement testParseProtocols().
      */
-    public function testParse() {
-        $this->object->load('..//examples//protocol.config.xml');
+    public function testParseProtocols() {
+    	//NOTE: load is a wrapper that calls 'testParseProtocols' internally after reading xml file
+        $this->object->load($this->xmlFile);
         $definition = $this->object->getProtocolDefinition("LinkedIn", "Data");
         //TODO: validate contents
+        $xml = \simplexml_load_file($this->xmlFile);
+		foreach($definition->mappings() as $loadedMapping){
+			$mappingConfigs = $xml->xpath("//mapping[@name='{$loadedMapping->name()}']");
+            $this->assertTrue(!empty($mappingConfigs));
+			foreach($mappingConfigs as $mapping)
+			{
+				$this->assertEquals((string)$mapping['name'], $loadedMapping->name());
+				$this->assertEquals((string)$mapping['type'], $loadedMapping->type());
+                foreach($loadedMapping->bindings() as $loadedBinding)
+                {
+                    $bindConfigs = $mapping->xpath("bind[@source='{$loadedBinding->source()}' and @target='{$loadedBinding->target()}']");
+					$this->assertTrue(!empty($bindConfigs));
+					foreach($bindConfigs as $bindConfig){
+						$this->assertEquals((string)$bindConfig['source'], $loadedBinding->source());
+						$this->assertEquals((string)$bindConfig['target'], $loadedBinding->target());
+                        if(!empty($bindConfig['type'])){
+                            $this->assertEquals((string)$bindConfig['type'], $loadedBinding->type());
+                        }
+						else{
+                            $this->assertEquals($loadedBinding->type(), \ProtoMapper\Binds\ProtocolBind::DEFAULT_TYPE);
+                        }
+						if(!empty($bindConfig['parser'])){
+                            $this->assertEquals((string)$bindConfig['parser'], $loadedBinding->parser());
+                        }
+					}
+                }
+			}
+		}
     }
 }

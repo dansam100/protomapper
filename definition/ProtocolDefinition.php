@@ -137,6 +137,11 @@ class ProtocolDefinition implements IValueParser
         return $this->contenttype;
     }
     
+    public function mappings()
+    {
+        return $this->mappings;
+    }
+    
     public function scope()
     {
         return $this->scope;
