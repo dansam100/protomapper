@@ -39,10 +39,11 @@ class ConfigLoaderTest extends \PHPUnit_Framework_TestCase {
         $definition = $this->object->getProtocolDefinition("LinkedIn", "Data");
         //TODO: validate contents
         $xml = \simplexml_load_file($this->xmlFile);
+        $configMappings = $xml->xpath("//mapping");
+        $this->assertEquals(count($configMappings), count($definition->mappings()));
 		foreach($definition->mappings() as $loadedMapping){
 			$mappingConfigs = $xml->xpath("//mapping[@name='{$loadedMapping->name()}']");
             $this->assertTrue(!empty($mappingConfigs));
-			$this->assertEquals(count($mappingConfigs), count($definition->mappings()));
 			foreach($mappingConfigs as $mapping)
 			{
 				$this->assertEquals((string)$mapping['name'], $loadedMapping->name());
