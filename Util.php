@@ -1,4 +1,5 @@
 <?php
+if(!function_exists('getWebContent')){
 /**
  * Gets the URL using CURL or fget.
  * @param string $url the url to access
@@ -20,14 +21,16 @@ function getWebContent($url)
 	
 	return $page;
 }
+}
 
+if(!function_exists('getTokens')){
 function getTokens($input, $regex)
 {
     $result = array();
     preg_match('/' . $regex . '/', $input, $result);
     return $result;
 }
-
+}
 
 function cast($obj, $to_class)
 {
