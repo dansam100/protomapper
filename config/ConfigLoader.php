@@ -24,7 +24,7 @@ class ConfigurationLoaderException extends \Exception{}
  */
 class ConfigLoader
 {
-    private $protocols;
+    protected $protocols;
     
     public function load($protocolConfigLocation)
     {
@@ -34,7 +34,7 @@ class ConfigLoader
         }        
         //LOAD: Load protocols for parsing data
         $protocol_xml = simplexml_load_file($protocolConfigLocation);
-        $this->protocols = $this->parseProtocols($protocol_xml);
+        return $this->protocols = $this->parseProtocols($protocol_xml);
     }
     
     /**
