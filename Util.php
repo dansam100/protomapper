@@ -101,5 +101,5 @@ function str_ends_with($haystack, $needle)
 
 function is_collection($var)
 {
-    return (is_array($var)|| $var instanceof ArrayObject);
+    return (is_array($var)|| $var instanceof ArrayObject || $var instanceof ArrayAccess);
 }
