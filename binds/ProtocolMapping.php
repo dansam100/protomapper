@@ -8,6 +8,7 @@ class ProtocolMapping
     protected $name;
     protected $type;
     protected $protocol;
+    protected $default;
     /**
      * A list of name/value bindings
      * @var ProtocolBind[]
@@ -28,7 +29,7 @@ class ProtocolMapping
      * @param ProtocolDefinition $protocol the read protocol associated with this binding
      * @param ProtocolBind[] $bindings the mapping associations related to the protocol
      */
-    public function __construct($name, $type, $parent = null, $protocol = null, $bindings = array()) 
+    public function __construct($name, $type, $parent = null, $protocol = null, $bindings = array(), $default = null) 
     {
         $this->name = $name;
 		if(!empty($type)){
@@ -43,6 +44,7 @@ class ProtocolMapping
         foreach($bindings as $binding){
             $this->bindings[$binding->source()] = $binding;
         }
+        $this->default = $default;
     }
     
     public function parent($parent = null)
@@ -62,7 +64,10 @@ class ProtocolMapping
     public function parse($content, $callback)
     {
         //@var Entity resulting entity to return
-        $result = new $this->type;
+        $result = $this->defaultValue();
+        if(!isset($result)){
+            $result = new $this->type;
+        }
         //for the case where a protocol is defined in a mapping, do another read if necessary and parse the contents
         $protocol = $this->protocol();
         if(isset($protocol)){
@@ -175,5 +180,9 @@ class ProtocolMapping
     public function bindings()
     {
         return array_values($this->bindings);
+    }
+    
+    public function defaultValue(){
+        return \ProtoMapper\Config\ConfigLoader::checkEvaluatable($this->default, $this->type);
     }
 }

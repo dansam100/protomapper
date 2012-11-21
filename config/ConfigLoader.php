@@ -87,10 +87,23 @@ class ConfigLoader
             null,
             $protocol,
             $bindings,
-            (string)$mapping['parser']
+            (string)$mapping['default']
         );
     }
     
+     public static function checkEvaluatable($code, $type){
+        if(!empty($code)){
+            if(!str_ends_with($code, ';')) $code .= ';';
+            if(!str_starts_with($code, 'return')) $code = 'return ' . $code;
+            $value = eval($code);
+            if(isset($value) && get_class_name($value) == $type){
+                return $value;
+            }
+        }
+        return null;
+    }
+
+
     /**
      * Parses a protocol xml file into respective protocol
      * @param \SimpleXMLElement $protocol_xml the xml defintion for a protocol
