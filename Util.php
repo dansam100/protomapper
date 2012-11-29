@@ -54,7 +54,7 @@ function cast($obj, $to_class)
             case "0":
                 return false;
             default:
-                return empty($val);
+                return !empty($val);
         }
     }
     elseif(class_exists($to_class))
