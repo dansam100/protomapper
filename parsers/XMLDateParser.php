@@ -11,7 +11,7 @@ namespace ProtoMapper\Parsers;
  *
  * @author sam.jr
  */
-class XmlDateParser
+class XMLDateParser
 {
     /**
      *

@@ -38,13 +38,13 @@
                 <mapping name="positions/position" type="Experience">
                     <bind source="title" target="position" type="string"/>
                     <bind source="summary" target="description" type="string" />
-                    <bind source="start-date" target="startDate" parser="ProtoMapper\Parsers\XmlDateParser" type="date">
+                    <bind source="start-date" target="startDate" parser="ProtoMapper\Parsers\XMLDateParser" type="date">
                         <data>
                             <bind source="month" target="month" type="integer"/>
                             <bind source="year" target="year" type="integer"/>
                         </data>
                     </bind>
-                    <bind source="end-date" target="endDate" parser="ProtoMapper\Parsers\XmlDateParser" type="date">
+                    <bind source="end-date" target="endDate" parser="ProtoMapper\Parsers\XMLDateParser" type="date">
                         <data>
                             <bind source="month" target="month" type="integer"/>
                             <bind source="year" target="year" type="integer"/>
@@ -103,7 +103,7 @@
                     <bind source="school-name" target="school" type="string" />
                     <bind source="field-of-study" target="program" type="string" />
                     <bind source="degree" target="status" type="string" />
-                    <bind source="start-date" target="startDate" parser="ProtoMapper\Parsers\XmlDateParser" type="date">
+                    <bind source="start-date" target="startDate" parser="ProtoMapper\Parsers\XMLDateParser" type="date">
                         <data>
                             <bind source="year" target="year" type="integer" />
                         </data>
