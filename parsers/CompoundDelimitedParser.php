@@ -12,7 +12,7 @@ namespace ProtoMapper\Parsers;;
  */
 class CompoundDelimitedParser extends DelimitedParser
 {
-    public function __construct($mappings, $type, $delimiters = array('\n', ',')){
+    public function __construct($mappings = null, $type = 'string', $delimiters = array('\n', ',')){
         parent::__construct($mappings, $type, implode("", $delimiters));
     }
 }

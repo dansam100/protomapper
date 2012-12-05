@@ -65,13 +65,28 @@ class ProtocolBind
      * @param IValueParser $callback
      * @return mixed
      */
-    public function parse($content, $callback)
+    public function parse($content, $callback = null)
     {
         $result = null;
         if(isset($content)){
             if(!empty($this->parser)){
                 $parser = new $this->parser($this->bindings(), $this->type());  //create a new parser with the given bindings
                 $result = $parser->parse($content, $callback);                  //pass the contents through the parser to get results
+            }
+            elseif(!empty($this->bindings)){
+                if(isset($this->type) && !is_scalar_type($this->type)){
+                    //call 'new' for non-scalar types and create the instances
+                    $result = new $this->type;
+                    foreach($this->bindings() as $binding){
+                        if(isset($callback)){
+                            $newcontent = $callback->getValue($content, $binding->source());
+                            $result->{$binding->target} = $binding->parse($newcontent, $callback);
+                        }
+                        else{
+                            $result->{$binding->target} = $binding->parse($content);
+                        }
+                    }
+                }
             }
             elseif(is_array($content)){
                 $result = cast($content[0], $this->type());
@@ -111,8 +126,12 @@ class ProtocolBind
         return $this->parser;
     }
     
-    public function bindings()
+    public function bindings($index = null)
     {
-        return array_values($this->bindings);
+        $bindings = array_values($this->bindings);
+        if(isset($index)){
+            return $bindings[$index];
+        }
+        return $bindings;
     }
 }

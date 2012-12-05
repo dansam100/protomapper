@@ -47,7 +47,7 @@ class ConfigLoader
         return $this->protocols[$name][$type];
     }
     
-    protected function createBinding(\SimpleXmlElement $bind)
+    function createBinding(\SimpleXmlElement $bind)
     {
         return new ProtocolBind
         (
@@ -67,7 +67,7 @@ class ConfigLoader
      * @param \SimpleXmlElement $mapping the list of mappings to parse
      * @return \Rexume\Config\ProtocolMapping The created protocol mapping
      */
-    protected function createMapping(\SimpleXmlElement $mapping)
+    function createMapping(\SimpleXmlElement $mapping)
     {
         $protocol = null;
         $bindings = array_map(array($this, 'createBinding'), $mapping->xpath('bind'));

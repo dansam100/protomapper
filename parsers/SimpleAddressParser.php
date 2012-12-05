@@ -38,7 +38,7 @@ class SimpleAddressParser
     public function __construct($mappings, $type) {
         $this->mappings = $mappings;
         $this->type = $type;
-        $this->parser = new CompoundDelimitedParser(null, 'string');
+        $this->parser = new CompoundDelimitedParser(null, 'string', array('\n', ','));
     }
     
     /**

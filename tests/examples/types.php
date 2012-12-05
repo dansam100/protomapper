@@ -35,10 +35,12 @@ class Experience{
 	public $department;
 	public $startDate;
 	public $endDate;
+    public $durations;
 	public $isCurrent;
 	public $activities;
 	public function __construct(){
 		$this->activities = array();
+        $this->durations = array();
 	}
 }
 
@@ -81,4 +83,9 @@ class Degree{
 
 class Activity{
     public $description;
+}
+
+class Duration{
+    public $startDate;
+    public $endDate;
 }

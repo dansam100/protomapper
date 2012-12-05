@@ -11,7 +11,7 @@ namespace ProtoMapper\Parsers;
  * @author sam.jr
  */
 class NewlineDelimitedParser extends DelimitedParser{
-    public function __construct($mappings, $type, $delimiter = "\n") {
+    public function __construct($mappings = null, $type = 'string', $delimiter = "\n") {
         parent::__construct($mappings, $type, $delimiter);
     }
 }

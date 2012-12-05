@@ -21,7 +21,7 @@ class XMLSimpleParser extends Parser
      * Ctor
      * @param ProtocolObject[] $mappings 
      */
-    public function __construct($mappings, $type) {
+    public function __construct($mappings = null, $type = null) {
         parent::__construct($mappings, $type);
         $this->results = array();
     }

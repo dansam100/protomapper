@@ -102,7 +102,7 @@ EOL;
     }
 
     /**
-     * @covers Rexume\Lib\Parsers\LinkedInAddressParser::parse
+     * @covers Rexume\Lib\Parsers\SimpleAddressParser::parse
      */
     public function testParse() {
         $this->object = new SimpleAddressParser($this->mappings, $this->type);

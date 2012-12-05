@@ -17,7 +17,7 @@ class ProtocolMapping
     
     /**
      * The parent definition that houses the protocol object
-     * @var ProtocolDefinition
+     * @var \ProtoMapper\Definition\ProtocolDefinition
      */
     protected $parent;
     
