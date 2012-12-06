@@ -69,27 +69,26 @@ EOL;
     protected function setUp() {
         $this->type = 'Address';
         $this->mappings = array(
-            new ProtocolBind(".", "street1"),
-            new ProtocolBind(".", "street2"),
-            new ProtocolBind(".", "city"),
-            new ProtocolBind(".", "province"),
-            new ProtocolBind(".", "postalCode"),
-            new ProtocolBind(".", "country")
+            new ProtocolBind("street1", "street1"),
+            new ProtocolBind("street2", "street2"),
+            new ProtocolBind("city", "city"),
+            new ProtocolBind("province", "province"),
+            new ProtocolBind("postalCode", "postalCode"),
+            new ProtocolBind("country", "country")
         );
-        $createTag = function($content){ return '<value>' . $content . '</value>'; };
         $this->testAddresses1 = array(
-            new \SimpleXMLElement($createTag($this->simpleAddress1)),
-            new \SimpleXMLElement($createTag($this->simpleAddressWithName1)),
-            new \SimpleXMLElement($createTag($this->simpleAddressOneLine1))
+            $this->simpleAddress1,
+            $this->simpleAddressWithName1,
+            $this->simpleAddressOneLine1
         );
         $this->testAddresses2 = array(
-            new \SimpleXMLElement($createTag($this->simpleAddress2)),
-            new \SimpleXMLElement($createTag($this->simpleAddressWithName2))
+            $this->simpleAddress2,
+            $this->simpleAddressWithName2
         );
         $this->testAddresses3 = array(
-            new \SimpleXMLElement($createTag($this->simpleAddressWithCompanyAndName2)),
-            new \SimpleXMLElement($createTag($this->simpleAddressWithName3)),
-            new \SimpleXMLElement($createTag($this->simpleAddressWithComplexPostalCode3))
+            $this->simpleAddressWithCompanyAndName2,
+            $this->simpleAddressWithName3,
+            $this->simpleAddressWithComplexPostalCode3
         );
     }
 

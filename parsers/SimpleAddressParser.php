@@ -31,14 +31,16 @@ class SimpleAddressParser
                                     );
     private $poBoxRegexes = array('/\bp(ost)?[.\s-]?o(ffice)?[.\s-]+b(ox)?[\s]+[a-z0-9]+\b/i');
     private $locationRegexes = array('/^([a-z]+)[\s]+([a-z]+)[\s,]+([a-z0-9-]+)+$/i');
+    private $locationRegexFallback = array('/^([a-z]+)([\s]+([a-z]+)[\s,]+([a-z0-9-]+)+)?/i');
     private $countryRegexes = array('/^[^\s]+$/i');
-    private $street1Regexes = 
-            array('/^\b((?:\d+[\s]*(?:-[\s]*[\d]+)?){1}(?:)((?:(?:[\s]+)(?:E[\S]*|S[\S]*|N[\S]*|W[\S]*)))?[\s]+([a-z]+)(?:[\s]+[a-z]+)([\s]+(?:E[ast]*|S[outh]*|N[orth]*|W[est]*))?)+\b/i');
+    private $street1Regexes = array(
+        '/^\b((?:\d+[\s]*(?:-[\s]*[\d]+)?){1}(?:)((?:(?:[\s]+)(?:E[\S]*|S[\S]*|N[\S]*|W[\S]*)))?[\s]+([a-z]+)(?:[\s]+[a-z]+)([\s]+(?:E[ast]*|S[outh]*|N[orth]*|W[est]*))?)+\b/i'
+    );
         
     public function __construct($mappings, $type) {
         $this->mappings = $mappings;
         $this->type = $type;
-        $this->parser = new CompoundDelimitedParser(null, 'string', array('\n', ','));
+        $this->parser = new CompoundDelimitedParser(null, 'string', array(',', '\n'));
     }
     
     /**
@@ -48,7 +50,8 @@ class SimpleAddressParser
      */
     public function parse($content, $callback = null)
     {
-        $string = (isset($callback)) ? $callback->getValue($content, ".") : $content;
+        $string = (string)$content;
+        
         //certain things can be matched right away
         $this->postalCode = $this->getMatch($string, $this->postalCodeRegexes);
         $this->street2 = $this->getMatch($string, $this->poBoxRegexes);
@@ -57,11 +60,14 @@ class SimpleAddressParser
         //match the rest
         $this->street1 = $this->getMatch($pieces, $this->street1Regexes);
         $this->city = $this->getMatch($pieces, $this->locationRegexes, 1, $this->poBoxRegexes);
+        if(empty($this->city)){
+            $this->city = $this->getMatch($pieces, $this->locationRegexFallback, 0, $this->poBoxRegexes);
+        }
         $this->province = $this->getMatch($pieces, $this->locationRegexes, 2, $this->poBoxRegexes);
-        $this->country = $this->getMatch($pieces, $this->countryRegexes);
+        $this->country = $this->getMatch($pieces, $this->countryRegexes, 0, array($this->city));
         $result = new $this->type;
         foreach($this->mappings as $mapping){
-            $result->{$mapping->target()} = $this->{$mapping->target()};
+            $result->{$mapping->source()} = $this->{$mapping->target()};
         }
         return $result;
     }
@@ -78,9 +84,25 @@ class SimpleAddressParser
         else{
             foreach($regexes as $regex){
                 $matches = array();
+                //check whether to exclude the current content from the results
                 $is_excluded = $this->getMatch($content, $exclude);
-                if(empty($is_excluded) && preg_match($regex, $content, $matches)){
-                    return trim($matches[$match]);
+                //if not to be excluded, proceed to match with specified regex
+                if(empty($is_excluded)){
+                    //firset check if the supplied value is a regex, if not do a string comparison
+                    if(preg_match('/^\/.*\/([a-z])+[+\$]*$/', $regex)){
+                        //do a regex comparison and only return if the match index matches what was asked for
+                        if(preg_match($regex, $content, $matches)){
+                            if(isset($matches[$match])){
+                                return trim($matches[$match]);
+                            }
+                        }
+                    }
+                    else{
+                        //perform a string comparison check
+                        if(strcmp($regex, $content) == 0){
+                            return $regex;
+                        }
+                    }
                 }
             }
         }
