@@ -110,26 +110,47 @@ class ProtocolMapping
                 $values = $callback->getValue($content, $binding->source());
                 $output = $binding->parse($values, $callback);
             }
-            if(isset($output)){
-                if(is_collection($result->$target)){   //add arrays entry by entry
-                    if(is_collection($output)){
-                        foreach($output as $entry){
-                            $result->{$target}[] = $entry;
+            $result = $this->setValue($result, $target, $output);
+            
+        }
+        return $result;
+    }
+    
+    private function setValue($object, $attribute, $value){
+        if(isset($value)){
+            
+            if(property_exists($object, $attribute)){
+                if(is_collection($object->$attribute)){   //add arrays entry by entry
+                    if(is_collection($value)){
+                        foreach($value as $entry){
+                            $object->{$attribute}[] = $entry;
                         }
                     }
                     else{
-                        $result->{$target}[] = $output;
+                        $object->{$attribute}[] = $value;
                     }
                 }
-                elseif(is_collection($output) && !empty($output)){     //if the target does not expect an array and yet given one, use only the first entry
-                    $result->$target = $output[0];
+                elseif(is_collection($value) && !empty($value)){     
+                    //if the target does not expect an array and yet given one, use only the first entry
+                    if(is_callable(array($object, $attribute))){
+                        call_user_func(array($object, $attribute), $value[0]);
+                    }
+                    else{
+                        $object->$attribute = $value[0];
+                    }
                 }
                 else{
-                    $result->$target = $output;
+                    if(is_callable(array($object, $attribute))){
+                        call_user_func(array($object, $attribute), $value);
+                    }
+                    else{
+                        $object->$attribute = $value;
+                    }
                 }
             }
         }
-        return $result;
+        
+        return $object;
     }
     
     /**
