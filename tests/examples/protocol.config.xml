@@ -38,6 +38,7 @@
                 <mapping name="positions/position" type="Experience">
                     <bind source="title" target="position" type="string"/>
                     <bind source="summary" target="description" type="string" />
+                    <!--Parsing date directly-->
                     <bind source="start-date" target="startDate" parser="ProtoMapper\Parsers\XMLDateParser" type="date">
                         <data>
                             <bind source="month" target="month" type="integer"/>
@@ -48,6 +49,24 @@
                         <data>
                             <bind source="month" target="month" type="integer"/>
                             <bind source="year" target="year" type="integer"/>
+                        </data>
+                    </bind>
+                    <!--Let's parse dates into an object instead-->
+                    <bind source="." target="durations" type="Duration">
+                        <data>
+                            <bind source="start-date" target="startDate" parser="ProtoMapper\Parsers\XMLDateParser" type="date">
+                                <data>
+                                    <bind source="month" target="month" type="integer"/>
+                                    <bind source="year" target="year" type="integer"/>
+                                    <bind source="day" target="day" type="integer" />
+                                </data>
+                            </bind>
+                            <bind source="end-date" target="endDate" parser="ProtoMapper\Parsers\XMLDateParser" type="date">
+                                <data>
+                                    <bind source="month" target="month" type="integer"/>
+                                    <bind source="year" target="year" type="integer"/>
+                                </data>
+                            </bind>
                         </data>
                     </bind>
                     <bind source="is-current" target="isCurrent" type="boolean" />
