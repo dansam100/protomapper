@@ -55,7 +55,7 @@ class ProtocolBind
         }
         $this->bindings = array();
         foreach($bindings as $binding){
-            $this->bindings[$binding->source] = $binding;
+            $this->bindings[$binding->name()] = $binding;
         }
     }
     
@@ -80,10 +80,10 @@ class ProtocolBind
                     foreach($this->bindings() as $binding){
                         if(isset($callback)){
                             $newcontent = $callback->getValue($content, $binding->source());
-                            $result->{$binding->target} = $binding->parse($newcontent, $callback);
+                            $result = set_value($result, $binding->target(), $binding->parse($newcontent, $callback));
                         }
                         else{
-                            $result->{$binding->target} = $binding->parse($content);
+                            $result = set_value($result, $binding->target(), $binding->parse($newcontent));
                         }
                     }
                 }

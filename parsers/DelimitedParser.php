@@ -46,8 +46,7 @@ class DelimitedParser
             if(!empty($result)){
                 //call 'new' for non-scalar types and create the instances
                 if(!is_scalar_type($this->type)){
-                    $item = new $this->type;
-                    $item->$target = $result;
+                    $item = set_value(new $this->type, $target, $result);
                     $this->results[] = $item;
                 }
                 else{   //return an array of objects for the scalar types

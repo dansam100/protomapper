@@ -103,3 +103,45 @@ function is_collection($var)
 {
     return (is_array($var)|| $var instanceof ArrayObject || $var instanceof ArrayAccess);
 }
+
+function set_value($object, $attribute, $value){
+    if(isset($value)){
+        //functions get first priority. invoke functions to assign value
+        if(is_callable(array($object, $attribute))){
+            if(is_collection($value)){
+                foreach($value as $entry){
+                    call_user_func(array($object, $attribute), $entry);
+                }
+            }
+            else{
+                call_user_func(array($object, $attribute), $value);
+            }
+        }
+        elseif(property_exists($object, $attribute)){
+            if(is_collection($object->$attribute)){
+                //var_dump($value);
+                //add arrays entry by entry
+                if(is_collection($value)){
+                    foreach($value as $entry){
+                        $object->{$attribute}[] = $entry;
+                    }
+                }
+                //adding a single value
+                else{
+                    $object->{$attribute}[] = $value;
+                }
+            }
+            else{
+                //if the target does not expect an array and yet given one, use only the first entry
+                if(is_collection($value) && !empty($value)){
+                    $object->$attribute = $value[0];
+                }
+                else{
+                    $object->$attribute = $value;
+                }
+            }
+        }
+    }
+
+    return $object;
+}

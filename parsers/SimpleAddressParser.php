@@ -30,7 +30,7 @@ class SimpleAddressParser
                                         '/\b[A-Z]{1,2}\d[A-Z\d]?[\s]*\d[ABD-HJLNP-UW-Z]{2}\b/i'
                                     );
     private $poBoxRegexes = array('/\bp(ost)?[.\s-]?o(ffice)?[.\s-]+b(ox)?[\s]+[a-z0-9]+\b/i');
-    private $locationRegexes = array('/^([a-z]+)[\s]+([a-z]+)[\s,]+([a-z0-9-]+)+$/i');
+    private $locationRegexes = array('/^([a-z]+)[\s]+([a-z]+)([\s,]+([a-z0-9-]+)+)?$/i');
     private $locationRegexFallback = array('/^([a-z]+)([\s]+([a-z]+)[\s,]+([a-z0-9-]+)+)?/i');
     private $countryRegexes = array('/^[^\s]+$/i');
     private $street1Regexes = array(
@@ -65,9 +65,11 @@ class SimpleAddressParser
         }
         $this->province = $this->getMatch($pieces, $this->locationRegexes, 2, $this->poBoxRegexes);
         $this->country = $this->getMatch($pieces, $this->countryRegexes, 0, array($this->city));
+        //construct result object
         $result = new $this->type;
+        //set values on bindings
         foreach($this->mappings as $mapping){
-            $result->{$mapping->source()} = $this->{$mapping->target()};
+            $result = set_value($result, $mapping->target(), $this->{$mapping->source()});
         }
         return $result;
     }

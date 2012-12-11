@@ -42,7 +42,7 @@ class ProtocolMapping
         $this->protocol = $protocol;
         $this->bindings = array();
         foreach($bindings as $binding){
-            $this->bindings[$binding->source()] = $binding;
+            $this->bindings[$binding->name()] = $binding;
         }
         $this->default = $default;
     }
@@ -110,47 +110,9 @@ class ProtocolMapping
                 $values = $callback->getValue($content, $binding->source());
                 $output = $binding->parse($values, $callback);
             }
-            $result = $this->setValue($result, $target, $output);
-            
+            $result = set_value($result, $target, $output);
         }
         return $result;
-    }
-    
-    private function setValue($object, $attribute, $value){
-        if(isset($value)){
-            
-            if(property_exists($object, $attribute)){
-                if(is_collection($object->$attribute)){   //add arrays entry by entry
-                    if(is_collection($value)){
-                        foreach($value as $entry){
-                            $object->{$attribute}[] = $entry;
-                        }
-                    }
-                    else{
-                        $object->{$attribute}[] = $value;
-                    }
-                }
-                elseif(is_collection($value) && !empty($value)){     
-                    //if the target does not expect an array and yet given one, use only the first entry
-                    if(is_callable(array($object, $attribute))){
-                        call_user_func(array($object, $attribute), $value[0]);
-                    }
-                    else{
-                        $object->$attribute = $value[0];
-                    }
-                }
-                else{
-                    if(is_callable(array($object, $attribute))){
-                        call_user_func(array($object, $attribute), $value);
-                    }
-                    else{
-                        $object->$attribute = $value;
-                    }
-                }
-            }
-        }
-        
-        return $object;
     }
     
     /**
