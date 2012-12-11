@@ -49,6 +49,6 @@ class XMLDateParser
                 $this->$target = $mapping->parse($result, $callback);
             }
         }
-        return date(DATE_ATOM, mktime(0,0,0,$this->month, $this->day, $this->year));
+        return new \DateTime(date(DATE_ATOM, mktime(0,0,0,$this->month, $this->day, $this->year)));
     }
 }
