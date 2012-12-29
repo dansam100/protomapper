@@ -14,9 +14,12 @@ class ClassLoader{
 	private $namespace;
 	private $rootPath;
 	private $namespaceSeparator = '\\';
-	public function __construct($namespace, $rootPath){
+    private $recurse;
+    private $fileExtension = '.php';
+	public function __construct($namespace, $rootPath, $recurse = false){
 		$this->namespace = $namespace;
 		$this->rootPath = $rootPath;
+        $this->recurse = $recurse;
 	}
 	
 	public function register()
@@ -30,6 +33,9 @@ class ClassLoader{
 	}
 	
 	public function contains($className){
+        if($this->namespace == "*"){
+            return true;
+        }
 		$split = explode($this->namespaceSeparator, $className);
 		$class = array_pop($split);
 		$nsOnly = implode($this->namespaceSeparator, $split);
@@ -40,11 +46,19 @@ class ClassLoader{
 	public function autoload($className)
 	{
 		if($this->contains($className)){
-			$path = $this->rootPath . DIRECTORY_SEPARATOR . trim($className, '\\') . ".php";
+			$path = $this->rootPath . DIRECTORY_SEPARATOR . trim($className, '\\') . $this->fileExtension;
 			if(is_readable($path)){
 				require_once($path);
 				return true;
 			}
+            elseif($this->recurse){
+                $folder = (($this->rootPath !== null) ? $this->rootPath . DIRECTORY_SEPARATOR : '') . $this->namespace;
+                $file = mb_substr(strrchr($className, '\\'), 1) . $this->fileExtension;
+                $files = find($folder, $file);
+                if(empty($files)) return false;
+                foreach($files as $file){ require_once $file; }
+                return true;
+            }
 		}
 		return false;
 	}
