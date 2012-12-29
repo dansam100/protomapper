@@ -72,7 +72,7 @@ class ProtocolMapping
         $protocol = $this->protocol();
         if(isset($protocol)){
             //parse the query into tokens to find parameters and supply those parameters
-            $tokens = getTokens($protocol->query(), '\${(*)}');
+            $tokens = get_tokens($protocol->query(), '\${(*)}');
             $query = $protocol->createQueryFromTokens($protocol->query(), $this->parseValues($tokens, $content, $callback));
             //create a reader object and retrieve the contents
             $reader = new \Rexume\Readers\OAuthReader($protocol->name());

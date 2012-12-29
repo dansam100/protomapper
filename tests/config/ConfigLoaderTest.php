@@ -44,12 +44,10 @@ class ConfigLoaderTest extends \PHPUnit_Framework_TestCase {
 		foreach($definition->mappings() as $loadedMapping){
 			$mappingConfigs = $xml->xpath("//mapping[@name='{$loadedMapping->name()}']");
             $this->assertTrue(!empty($mappingConfigs));
-			foreach($mappingConfigs as $mapping)
-			{
+			foreach($mappingConfigs as $mapping){
 				$this->assertEquals((string)$mapping['name'], $loadedMapping->name());
 				$this->assertEquals((string)$mapping['type'], $loadedMapping->type());
-                foreach($loadedMapping->bindings() as $loadedBinding)
-                {
+                foreach($loadedMapping->bindings() as $loadedBinding){
                     $bindConfigs = $mapping->xpath("bind[@source='{$loadedBinding->source()}' and @target='{$loadedBinding->target()}']");
 					$this->assertTrue(!empty($bindConfigs));
 					foreach($bindConfigs as $bindConfig){
