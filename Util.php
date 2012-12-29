@@ -1,11 +1,11 @@
 <?php
-if(!function_exists('getWebContent')){
+if(!function_exists('get_web_content')){
 /**
  * Gets the URL using CURL or fget.
  * @param string $url the url to access
  * @return string the parsed page
  */
-function getWebContent($url)
+function get_web_content($url)
 {
 	$page = null;
 	if(ini_get('allow_url_fopen')) {
@@ -23,13 +23,13 @@ function getWebContent($url)
 }
 }
 
-if(!function_exists('getTokens')){
-function getTokens($input, $regex)
-{
-    $result = array();
-    preg_match('/' . $regex . '/', $input, $result);
-    return $result;
-}
+if(!function_exists('get_tokens')){
+    function get_tokens($input, $regex)
+    {
+        $result = array();
+        preg_match('/' . $regex . '/', $input, $result);
+        return $result;
+    }
 }
 
 function cast($obj, $to_class)
@@ -45,6 +45,9 @@ function cast($obj, $to_class)
         return (float)((string)$obj);
     }
     elseif($to_class == 'boolean' || $to_class == 'bool'){
+        if(is_bool($obj)){
+            return $obj;
+        }
         $val = (string)$obj;
         switch (strtolower($val)){
             case "true":
@@ -93,14 +96,13 @@ function str_starts_with($haystack, $needle)
 function str_ends_with($haystack, $needle)
 {
     $length = strlen($needle);
-    if ($length == 0) {
+    if ($length == 0){
         return true;
     }
     return (substr($haystack, -$length) === $needle);
 }
 
-function is_collection($var)
-{
+function is_collection($var){
     return (is_array($var)|| $var instanceof ArrayObject || $var instanceof ArrayAccess);
 }
 
@@ -144,4 +146,15 @@ function set_value($object, $attribute, $value){
     }
 
     return $object;
+}
+
+function to_key_value_pair($array, $escape = false){
+    $result = "";
+    foreach($array as $key => $value){
+        if($escape){
+            $result += "$key='" . htmlspecialchars($value) . "' ";
+        }
+        else $result += "$key='$value' ";
+    }
+    return \trim($result);
 }
