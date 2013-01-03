@@ -53,7 +53,7 @@ class ClassLoader{
 			}
             elseif($this->recurse){
                 $folder = (($this->rootPath !== null) ? $this->rootPath . DIRECTORY_SEPARATOR : '') . $this->namespace;
-                $file = mb_substr(strrchr($className, '\\'), 1) . $this->fileExtension;
+                $file = substr(strrchr($className, '\\'), 1) . $this->fileExtension;
                 $files = find($folder, $file);
                 if(empty($files)) return false;
                 foreach($files as $file){ require_once $file; }
