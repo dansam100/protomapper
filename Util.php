@@ -24,6 +24,12 @@ function get_web_content($url)
 }
 
 if(!function_exists('get_tokens')){
+    /**
+     * Tokenize a string based on a regex
+     * @param string $input
+     * @param string $regex
+     * @return array array of matched tokens
+     */
     function get_tokens($input, $regex)
     {
         $result = array();
@@ -32,10 +38,15 @@ if(!function_exists('get_tokens')){
     }
 }
 
+/**
+ * 
+ * @param mixed $obj
+ * @param string $to_class class to cast to
+ * @return mixed the resulting object 
+ */
 function cast($obj, $to_class)
 {
-    if($to_class == 'string')
-    {
+    if($to_class == 'string'){
         return (string)$obj;
     }
     elseif($to_class == 'integer' || $to_class == 'int'){
@@ -69,6 +80,11 @@ function cast($obj, $to_class)
     else return false;
 }
 
+/**
+ * Gets the name of the class only
+ * @param mixed $object object to get the class of
+ * @return string the name of the class excluding namespace
+ */
 function get_class_name($object = null)
 {
     if (!is_object($object) && !is_string($object)){
@@ -78,7 +94,11 @@ function get_class_name($object = null)
     return $class[count($class) - 1];
 }
 
-
+/**
+ * Determines whether an specified class is a scalar type
+ * @param string $type the type to check
+ * @return boolean true if class is a scalar type
+ */
 function is_scalar_type($type = null){
     if(!isset($type)){
         return false;
@@ -102,10 +122,22 @@ function str_ends_with($haystack, $needle)
     return (substr($haystack, -$length) === $needle);
 }
 
+/**
+ * Checks that an object can be accessed like a collection or array
+ * @param mixed $var The object to check
+ * @return boolean true if item is an array or collection
+ */
 function is_collection($var){
     return (is_array($var)|| $var instanceof ArrayObject || $var instanceof ArrayAccess);
 }
 
+/**
+ * 
+ * @param type $object
+ * @param type $attribute
+ * @param type $value
+ * @return type
+ */
 function set_value($object, $attribute, $value){
     if(isset($value)){
         //functions get first priority. invoke functions to assign value
@@ -121,7 +153,6 @@ function set_value($object, $attribute, $value){
         }
         elseif(property_exists($object, $attribute)){
             if(is_collection($object->$attribute)){
-                //var_dump($value);
                 //add arrays entry by entry
                 if(is_collection($value)){
                     foreach($value as $entry){
@@ -148,6 +179,12 @@ function set_value($object, $attribute, $value){
     return $object;
 }
 
+/**
+ * 
+ * @param type $array
+ * @param type $escape
+ * @return type
+ */
 function to_key_value_pair($array, $escape = false){
     $result = "";
     foreach($array as $key => $value){
