@@ -2,17 +2,13 @@
 namespace ProtoMapper\Config;
 use ProtoMapper\Definition\ProtocolDefinition as ProtocolDefinition;
 use ProtoMapper\Binds\ProtocolObject as ProtocolObject;
+use ProtoMapper\Binds\ProtocolMapping as ProtocolMapping;
 use ProtoMapper\Binds\ProtocolBind as ProtocolBind;
 
 /**
 * Exception thrown when loading invalid configuration files
 */
 class ConfigurationLoaderException extends \Exception{}
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 /**
  * Description of ProtocolParser
@@ -55,22 +51,33 @@ class ConfigLoader
             (string)$bind['target'], 
             (string)$bind['type'],
             (string)$bind['name'],
+            $bind['unique'],
             (string)$bind['default'],
             (string)$bind['parser'],
+            ($bind->getName() == 'make'),
             array_map(array($this, 'createBinding'), $bind->xpath('data/bind'))
         );
     }
-    
     
     /**
      * Parses a mapping xml definition for a given protocol
      * @param \SimpleXmlElement $mapping the list of mappings to parse
      * @return \Rexume\Config\ProtocolMapping The created protocol mapping
      */
-    function createMapping(\SimpleXmlElement $mapping)
+    function createObjectMapping(\SimpleXmlElement $mapping)
+    {
+        return $this->createMapping($mapping, true);
+    }
+    
+    /**
+     * Parses a mapping xml definition for a given protocol
+     * @param \SimpleXmlElement $mapping the list of mappings to parse
+     * @return \Rexume\Config\ProtocolMapping The created protocol mapping
+     */
+    function createMapping(\SimpleXmlElement $mapping, $isObject = false)
     {
         $protocol = null;
-        $bindings = array_map(array($this, 'createBinding'), $mapping->xpath('bind'));
+        $bindings = array_map(array($this, 'createBinding'), $mapping->xpath('bind|make'));
         if($mapping->read){
             $protocol = $this->parseProtocol
             (
@@ -80,15 +87,12 @@ class ConfigLoader
                 (string)$mapping->read['parser']
             );
         }
-        return new ProtocolObject
-        (
-            (string)$mapping['name'],
-            (string)$mapping['type'],
-            null,
-            $protocol,
-            $bindings,
-            (string)$mapping['default']
-        );
+        if($isObject){
+            return new ProtocolObject((string)$mapping['name'], (string)$mapping['type'], null, $protocol, $bindings, (string)$mapping['default']);
+        }
+        else{
+            return new ProtocolMapping((string)$mapping['name'], (string)$mapping['type'], null, $protocol, $bindings, (string)$mapping['default']);
+        }
     }
     
      public static function checkEvaluatable($code, $type){
@@ -143,7 +147,7 @@ class ConfigLoader
      */
     protected function parseProtocol($name, $type, $readDef, $parser)
     {
-        $objects = array_map(array($this, 'createMapping'), $readDef->xpath('object'));
+        $objects = array_map(array($this, 'createObjectMapping'), $readDef->xpath('object'));
         $mappings = array_map(array($this, 'createMapping'), $readDef->xpath('mappings/mapping'));        
         return new ProtocolDefinition
         (

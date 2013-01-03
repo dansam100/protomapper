@@ -57,6 +57,15 @@ class ProtocolMapping
     }
     
     /**
+     * Creates a new EntityType for the current mapping
+     * Meant to be overridden to perform extra logic on creation (see: ProtoMapper\Binds\ProtocolObject)
+     * @return Entity
+     */
+    public function initialize(){
+        return new $this->type;
+    }
+    
+    /**
      * Parses a given node element and returns the resulting object
      * @param SimpleXMLElement $content the contents to parse
      * @param IParser $callback A call back to find values within the current node. The callback must take two parameters: content (SimpleXMLElement) and a key (string)
@@ -64,10 +73,7 @@ class ProtocolMapping
     public function parse($content, $callback)
     {
         //@var Entity resulting entity to return
-        $result = $this->defaultValue();
-        if(!isset($result)){
-            $result = new $this->type;
-        }
+        $result = $this->initialize();
         //for the case where a protocol is defined in a mapping, do another read if necessary and parse the contents
         $protocol = $this->protocol();
         if(isset($protocol)){
@@ -163,9 +169,5 @@ class ProtocolMapping
     public function bindings()
     {
         return array_values($this->bindings);
-    }
-    
-    public function defaultValue(){
-        return \ProtoMapper\Config\ConfigLoader::checkEvaluatable($this->default, $this->type);
     }
 }
