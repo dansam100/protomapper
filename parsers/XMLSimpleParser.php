@@ -99,12 +99,14 @@ class XMLSimpleParser extends Parser
      */
     public function getValue($content, $key)
     {
-        $result =  $content->xpath($key);
-        if(!empty($result)){
-            if(is_collection($result)){
-                $result = $result[0];
+        if(isset($content)){
+            $result =  $content->xpath($key);
+            if(!empty($result)){
+                if(is_collection($result)){
+                    $result = $result[0];
+                }
+                return $result;
             }
-            return $result;
         }
         return null;
     }
@@ -117,9 +119,11 @@ class XMLSimpleParser extends Parser
      */
     public function getValues($content, $key)
     {
-        $result =  $content->xpath($key);
-        if(!empty($result)){
-            return $result;
+        if(isset($content)){
+            $result =  $content->xpath($key);
+            if(!empty($result)){
+                return $result;
+            }
         }
         return null;
     }
@@ -133,5 +137,3 @@ class XMLSimpleParser extends Parser
         return $key;
     }
 }
-
-?>
