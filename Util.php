@@ -189,9 +189,18 @@ function to_key_value_pair($array, $escape = false){
     $result = "";
     foreach($array as $key => $value){
         if($escape){
-            $result += "$key='" . htmlspecialchars($value) . "' ";
+            $result .= "$key='" . htmlspecialchars($value) . "' ";
         }
-        else $result += "$key='$value' ";
+        else $result .= "$key='$value' ";
     }
     return \trim($result);
+}
+
+function get_attributes($object, $flags = \ReflectionProperty::IS_PUBLIC){
+    $result = array();
+    $class = new \ReflectionClass(\get_class($object));
+    foreach($class->getProperties($flags) as $property){
+        $result[] = $property->getName();
+    }
+    return $result;
 }

@@ -61,7 +61,7 @@ class ProtocolBind
         if(!empty($make)){
             $this->isMake = cast($make, "bool");
         }
-        if(!empty($make)){
+        if(!empty($unique)){
             $this->isUnique = cast($unique, "bool");
         }
         $this->bindings = array();
