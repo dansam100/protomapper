@@ -1,8 +1,9 @@
 <?php
 require_once("Util.php");
+
 $PROTO_BASE_DIR = dirname(dirname(__FILE__));
 $loaders = array(
-	new ClassLoader("ProtoMapper\Binds", $PROTO_BASE_DIR),
+    new ClassLoader("ProtoMapper\Binds", $PROTO_BASE_DIR),
 	new ClassLoader("ProtoMapper\Config", $PROTO_BASE_DIR),
 	new ClassLoader("ProtoMapper\Definition", $PROTO_BASE_DIR),
 	new ClassLoader("ProtoMapper\Parsers", $PROTO_BASE_DIR)
@@ -37,7 +38,6 @@ class ClassLoader{
             return true;
         }
 		$split = explode($this->namespaceSeparator, $className);
-		$class = array_pop($split);
 		$nsOnly = implode($this->namespaceSeparator, $split);
 		return (strcmp($this->namespace, $nsOnly) == 0);
 		

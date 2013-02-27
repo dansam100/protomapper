@@ -111,30 +111,3 @@ class SimpleAddressParser
         return null;
     }
 }
-
-
-/**
-* Authentication state flags
-*/
-class AddressFieldType
-{
-    private static $address_field_type;
-    private $types;
-    public function __construct() {
-        $this->types = new \Rexume\Models\Enums\Enum("STREET1", "STREET2", "CITY", "PROVINCE", "POSTALCODE", "COUNTRY", "NONE");
-    }
-    
-    public function __get(/*string*/ $name)
-    {
-        return $this->types->$name;
-    }
-    
-    public static function get()
-    {
-        if(isset(self::$address_field_type))
-        {
-            return self::$address_field_type;
-        }
-        else return self::$address_field_type = new AddressFieldType();
-    }
-}
