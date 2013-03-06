@@ -13,6 +13,9 @@ class ProtocolBindTest extends \PHPUnit_Framework_TestCase {
      */
     protected $object1;
     protected $object2;
+    protected $object3;
+    protected $object4;
+    protected $object5;
     protected $binding;
     protected $configLoader;
     protected $mappingConfig1 = <<<EOL
@@ -41,6 +44,27 @@ EOL;
             </data>
         </bind>
 EOL;
+    protected $mappingConfig3 = <<<EOL
+        <bind source="." target="something" type="Duration">
+            <data>
+                <bind source="start-date" target="startDate" format="F !d, Y" type="date" />
+            </data>
+        </bind>
+EOL;
+    protected $mappingConfig4 = <<<EOL
+        <bind source="." target="something" type="Duration">
+            <data>
+                <bind source="start-date" target="startDate" format="!F Y" type="date" />
+            </data>
+        </bind>
+EOL;
+        protected $mappingConfig5 = <<<EOL
+        <bind source="." target="something" type="Duration">
+            <data>
+                <bind source="start-date" target="startDate" type="date" />
+            </data>
+        </bind>
+EOL;
     protected $sampleData1 = "test\ntest2\ntest3";
     protected $sampleData2 = <<<EOL
         <data>
@@ -56,6 +80,16 @@ EOL;
             </end-date>
         </data>
 EOL;
+    protected $sampleData3 = <<<EOL
+        <data>
+            <start-date>Sep 20, 2012</start-date>
+        </data>
+EOL;
+    protected $sampleData4 = <<<EOL
+        <data>
+            <start-date>Sep 2012</start-date>
+        </data>
+EOL;
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
@@ -67,6 +101,15 @@ EOL;
         //load the second binding
         $xml2 = simplexml_load_string($this->mappingConfig2);
         $this->object2 = $this->configLoader->createBinding($xml2);
+        //load the third binding
+        $xml3 = simplexml_load_string($this->mappingConfig3);
+        $this->object3 = $this->configLoader->createBinding($xml3);
+        //load the fourth binding
+        $xml4 = simplexml_load_string($this->mappingConfig4);
+        $this->object4 = $this->configLoader->createBinding($xml4);
+        //load the fifth binding
+        $xml5 = simplexml_load_string($this->mappingConfig5);
+        $this->object5 = $this->configLoader->createBinding($xml5);
     }
 
     /**
@@ -108,9 +151,9 @@ EOL;
         $this->assertEquals("test3", $results[2]->description);
         
         //ask the binding to parse slightly more complex data with a parser
-        $callback = new \ProtoMapper\Parsers\XMLSimpleParser();
+        $callback2 = new \ProtoMapper\Parsers\XMLSimpleParser();
         $sampleData2 = simplexml_load_string($this->sampleData2);
-        $results = $this->object2->parse($sampleData2, $callback);
+        $results2 = $this->object2->parse($sampleData2, $callback2);
         //check that the binding is constructed properly.
         $this->assertEquals('.', $this->object2->name());
         $this->assertEquals('.', $this->object2->source());
@@ -134,8 +177,72 @@ EOL;
         $this->assertEquals('ProtoMapper\Parsers\XMLDateParser', $subbinding2->parser());
         
         //test that parser gets the right data
-        $this->assertInstanceOf('Duration', $results);
-        $this->assertEquals(date(DATE_ATOM, mktime(0,0,0,1, 2, 2012)), $results->startDate);
-        $this->assertEquals(date(DATE_ATOM, mktime(0,0,0,1, 1, 2013)), $results->endDate);
+        $this->assertInstanceOf('Duration', $results2);        
+        $this->assertEquals(date_format(new \DateTime('01/02/2012'), DATE_ATOM), date_format($results2->startDate, DATE_ATOM));
+        $this->assertEquals(date_format(new \DateTime('01/01/2013'), DATE_ATOM), date_format($results2->endDate, DATE_ATOM));
+        
+        //ask the binding to parse a simple object with date
+        $callback3 = new \ProtoMapper\Parsers\XMLSimpleParser();
+        $sampleData3 = simplexml_load_string($this->sampleData3);
+        $results3 = $this->object3->parse($sampleData3, $callback3);
+        $this->assertEquals('.', $this->object3->name());
+        $this->assertEquals('.', $this->object3->source());
+        $this->assertEquals('something', $this->object3->target());
+        $this->assertEquals('Duration', $this->object3->type());
+        $this->assertEmpty($this->object3->parser());
+        $this->assertCount(1, $this->object3->bindings());   //the binding has 1 nested binding
+        //check that the binding is constructed properly.
+        $subbinding3 = $this->object3->bindings(0);
+        $this->assertEquals('start-date', $subbinding3->name());
+        $this->assertEquals('start-date', $subbinding3->source());
+        $this->assertEquals('startDate', $subbinding3->target());
+        $this->assertEquals('date', $subbinding3->type());
+        $this->assertCount(0, $subbinding3->bindings());   //the binding has 1 nested binding
+        //check the parsed values
+        $this->assertInstanceOf('Duration', $results3);
+        $this->assertInstanceOf('DateTime', $results3->startDate);
+        $this->assertEquals(date_format(\DateTime::createFromFormat('m/!d/Y', '09/20/2012'), DATE_ATOM), date_format($results3->startDate, DATE_ATOM));
+        //try another date format
+        $callback4 = new \ProtoMapper\Parsers\XMLSimpleParser();
+        $sampleData4 = simplexml_load_string($this->sampleData4);
+        $results4 = $this->object4->parse($sampleData4, $callback4);
+        $this->assertEquals('.', $this->object4->name());
+        $this->assertEquals('.', $this->object4->source());
+        $this->assertEquals('something', $this->object4->target());
+        $this->assertEquals('Duration', $this->object4->type());
+        $this->assertEmpty($this->object4->parser());
+        $this->assertCount(1, $this->object4->bindings());   //the binding has 1 nested binding
+        //check that the binding is constructed properly.
+        $subbinding4 = $this->object4->bindings(0);
+        $this->assertEquals('start-date', $subbinding4->name());
+        $this->assertEquals('start-date', $subbinding4->source());
+        $this->assertEquals('startDate', $subbinding4->target());
+        $this->assertEquals('date', $subbinding4->type());
+        $this->assertCount(0, $subbinding4->bindings());   //the binding has 1 nested binding
+        //check the parsed values
+        $this->assertInstanceOf('Duration', $results4);
+        $this->assertInstanceOf('DateTime', $results4->startDate);
+        $this->assertEquals(date_format(\DateTime::createFromFormat('!m/d/Y', '09/01/2012'), DATE_ATOM), date_format($results4->startDate, DATE_ATOM));
+        //try default date format
+        $callback5 = new \ProtoMapper\Parsers\XMLSimpleParser();
+        $sampleData5 = simplexml_load_string($this->sampleData3);
+        $results5 = $this->object5->parse($sampleData5, $callback5);
+        $this->assertEquals('.', $this->object5->name());
+        $this->assertEquals('.', $this->object5->source());
+        $this->assertEquals('something', $this->object5->target());
+        $this->assertEquals('Duration', $this->object5->type());
+        $this->assertEmpty($this->object5->parser());
+        $this->assertCount(1, $this->object5->bindings());   //the binding has 1 nested binding
+        //check that the binding is constructed properly.
+        $subbinding5 = $this->object5->bindings(0);
+        $this->assertEquals('start-date', $subbinding5->name());
+        $this->assertEquals('start-date', $subbinding5->source());
+        $this->assertEquals('startDate', $subbinding5->target());
+        $this->assertEquals('date', $subbinding5->type());
+        $this->assertCount(0, $subbinding5->bindings());   //the binding has 1 nested binding
+        //check the parsed values
+        $this->assertInstanceOf('Duration', $results5);
+        $this->assertInstanceOf('DateTime', $results5->startDate);
+        $this->assertEquals(date_format(\DateTime::createFromFormat('!m/d/Y', '09/20/2012'), DATE_ATOM), date_format($results5->startDate, DATE_ATOM));
     }
 }

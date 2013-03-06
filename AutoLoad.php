@@ -38,6 +38,7 @@ class ClassLoader{
             return true;
         }
 		$split = explode($this->namespaceSeparator, $className);
+        $class = array_pop($split); //required to remove className from the exploded string
 		$nsOnly = implode($this->namespaceSeparator, $split);
 		return (strcmp($this->namespace, $nsOnly) == 0);
 		
