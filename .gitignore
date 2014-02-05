@@ -1,3 +1,4 @@
 /nbproject/*
 /.settings/*
 /tests/examples/sample.xml
+*.orig
