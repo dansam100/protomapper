@@ -43,21 +43,21 @@ EOL;
         </bind>
 EOL;
     protected $mappingConfig3 = <<<EOL
-        <bind source="." target="something" type="Duration">
+        <bind source="." target="something" type="ProtoMapper\Tests\Examples\Duration">
             <data>
                 <bind source="start-date" target="startDate" format="F !d, Y" type="date" />
             </data>
         </bind>
 EOL;
     protected $mappingConfig4 = <<<EOL
-        <bind source="." target="something" type="Duration">
+        <bind source="." target="something" type="ProtoMapper\Tests\Examples\Duration">
             <data>
                 <bind source="start-date" target="startDate" format="!F Y" type="date" />
             </data>
         </bind>
 EOL;
         protected $mappingConfig5 = <<<EOL
-        <bind source="." target="something" type="Duration">
+        <bind source="." target="something" type="ProtoMapper\Tests\Examples\Duration">
             <data>
                 <bind source="start-date" target="startDate" type="date" />
             </data>
@@ -186,7 +186,7 @@ EOL;
         $this->assertEquals('.', $this->object3->name());
         $this->assertEquals('.', $this->object3->source());
         $this->assertEquals('something', $this->object3->target());
-        $this->assertEquals('Duration', $this->object3->type());
+        $this->assertEquals('ProtoMapper\Tests\Examples\Duration', $this->object3->type());
         $this->assertEmpty($this->object3->parser());
         $this->assertCount(1, $this->object3->bindings());   //the binding has 1 nested binding
         //check that the binding is constructed properly.
@@ -197,7 +197,7 @@ EOL;
         $this->assertEquals('date', $subbinding3->type());
         $this->assertCount(0, $subbinding3->bindings());   //the binding has 1 nested binding
         //check the parsed values
-        $this->assertInstanceOf('Duration', $results3);
+        $this->assertInstanceOf('ProtoMapper\Tests\Examples\Duration', $results3);
         $this->assertInstanceOf('DateTime', $results3->startDate);
         $this->assertEquals(date_format(\DateTime::createFromFormat('m/!d/Y', '09/20/2012'), DATE_ATOM), date_format($results3->startDate, DATE_ATOM));
         //try another date format
@@ -207,7 +207,7 @@ EOL;
         $this->assertEquals('.', $this->object4->name());
         $this->assertEquals('.', $this->object4->source());
         $this->assertEquals('something', $this->object4->target());
-        $this->assertEquals('Duration', $this->object4->type());
+        $this->assertEquals('ProtoMapper\Tests\Examples\Duration', $this->object4->type());
         $this->assertEmpty($this->object4->parser());
         $this->assertCount(1, $this->object4->bindings());   //the binding has 1 nested binding
         //check that the binding is constructed properly.
@@ -218,7 +218,7 @@ EOL;
         $this->assertEquals('date', $subbinding4->type());
         $this->assertCount(0, $subbinding4->bindings());   //the binding has 1 nested binding
         //check the parsed values
-        $this->assertInstanceOf('Duration', $results4);
+        $this->assertInstanceOf('ProtoMapper\Tests\Examples\Duration', $results4);
         $this->assertInstanceOf('DateTime', $results4->startDate);
         $this->assertEquals(date_format(\DateTime::createFromFormat('!m/d/Y', '09/01/2012'), DATE_ATOM), date_format($results4->startDate, DATE_ATOM));
         //try default date format
@@ -228,7 +228,7 @@ EOL;
         $this->assertEquals('.', $this->object5->name());
         $this->assertEquals('.', $this->object5->source());
         $this->assertEquals('something', $this->object5->target());
-        $this->assertEquals('Duration', $this->object5->type());
+        $this->assertEquals('ProtoMapper\Tests\Examples\Duration', $this->object5->type());
         $this->assertEmpty($this->object5->parser());
         $this->assertCount(1, $this->object5->bindings());   //the binding has 1 nested binding
         //check that the binding is constructed properly.
@@ -239,7 +239,7 @@ EOL;
         $this->assertEquals('date', $subbinding5->type());
         $this->assertCount(0, $subbinding5->bindings());   //the binding has 1 nested binding
         //check the parsed values
-        $this->assertInstanceOf('Duration', $results5);
+        $this->assertInstanceOf('ProtoMapper\Tests\Examples\Duration', $results5);
         $this->assertInstanceOf('DateTime', $results5->startDate);
         $this->assertEquals(date_format(\DateTime::createFromFormat('!m/d/Y', '09/20/2012'), DATE_ATOM), date_format($results5->startDate, DATE_ATOM));
     }
