@@ -22,6 +22,11 @@ class ProtocolBind
     protected $isUnique;
     /**
      *
+     * @var string
+     */
+    protected $format;
+    /**
+     *
      * @var ProtocolBind[]
      */
     protected $bindings;
@@ -39,7 +44,7 @@ class ProtocolBind
      * $param bool $make determines whether the bind should create the object even if not found
      * @param ProtocolBind[] $bindings sub bindings that will dictate assignment
      */
-    public function __construct($source, $target, $type = null, $name = null, $unique = false, $default = null, $parser = null, $make = false, $bindings = array()) {
+    public function __construct($source, $target, $type = null, $name = null, $unique = false, $default = null, $format = null, $parser = null, $make = false, $bindings = array()) {
         $this->source = $source;
         $this->target = $target;
         if(!empty($parser)){
@@ -55,13 +60,16 @@ class ProtocolBind
             $this->name = $source;
         }
         else $this->name = $name;
+        if(!empty($format)){
+            $this->format = $format;
+        }
         if(!empty($default)){
-            $this->default = cast($default, $this->type);
+            $this->default = cast($default, $this->type, $this->format);
         }
         if(!empty($make)){
             $this->isMake = cast($make, "bool");
         }
-        if(!empty($make)){
+        if(!empty($unique)){
             $this->isUnique = cast($unique, "bool");
         }
         $this->bindings = array();
@@ -117,10 +125,10 @@ class ProtocolBind
                 }
             }
             elseif(is_array($content)){
-                $result = cast($content[0], $this->type());
+                $result = array_map(function($item){ return cast($item, $this->type, $this->format); }, $content);
             }
             else{
-                $result = cast($content, $this->type());
+                $result = cast($content, $this->type(), $this->format);
             }
         }
         elseif(isset($this->default)){

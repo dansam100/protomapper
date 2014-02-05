@@ -7,6 +7,7 @@ namespace ProtoMapper\Parsers;
  */
 class XMLSimpleParser extends Parser
 {
+    const SELF = '.';
     /**
      *
      * @var mixed results of the parse operation
@@ -32,13 +33,11 @@ class XMLSimpleParser extends Parser
      * @param IValueParser $callback A callback for intepreting parsed keys
      * @return Entity[] the parse results
      */
-    public function parse($data, $callback)
-    {
+    public function parse($data, $callback){
         $parser = new \SimpleXMLIterator($data);
         $this->content = $data;
         //process the root node
-        if(isset($callback))
-        {
+        if(isset($callback)){
             foreach($this->mappings as $mapping){
                 if(strcmp($mapping->name(), $parser->getName()) == 0){
                     $result = $this->invokeParser($mapping, $parser);
@@ -99,7 +98,7 @@ class XMLSimpleParser extends Parser
      */
     public function getValue($content, $key)
     {
-        if(isset($content)){
+        if(isset($content) && is_object($content)){
             $result =  $content->xpath($key);
             if(!empty($result)){
                 if(is_collection($result)){
@@ -107,6 +106,9 @@ class XMLSimpleParser extends Parser
                 }
                 return $result;
             }
+        }
+        elseif($key == XMLSimpleParser::SELF){
+            return $content;
         }
         return null;
     }

@@ -53,6 +53,7 @@ class ConfigLoader
             (string)$bind['name'],
             $bind['unique'],
             (string)$bind['default'],
+            (string)$bind['format'],
             (string)$bind['parser'],
             ($bind->getName() == 'make'),
             array_map(array($this, 'createBinding'), $bind->xpath('data/bind'))
@@ -119,7 +120,7 @@ class ConfigLoader
         $result = array();
         //parse xml and create protocol and protocol mapping definitions
         foreach ($protocolDefs as $protocolDef) {
-            foreach($protocolDefs->read as $readDef){
+            foreach($protocolDef->read as $readDef){
                 $protocol = $this->parseProtocol
                     (
                         (string)$protocolDef['name'],

@@ -42,9 +42,9 @@ if(!function_exists('get_tokens')){
  * 
  * @param mixed $obj
  * @param string $to_class class to cast to
- * @return mixed the resulting object 
+ * @return mixed the resulting object; false if parse fails for DateTime
  */
-function cast($obj, $to_class)
+function cast($obj, $to_class, $format = null)
 {
     if($to_class == 'string'){
         return (string)$obj;
@@ -71,13 +71,39 @@ function cast($obj, $to_class)
                 return !empty($val);
         }
     }
-    elseif(class_exists($to_class))
-    {
+    elseif($to_class == 'date'){
+        $default_formats = array("Y-m-d H:i:s+|", "Y-m-d+|", "", "F d, Y+|", "F d Y+|", "m#d#Y+|");
+        if($obj instanceof \DateTime){
+            return $obj;
+        }
+        else{
+            $obj = (string)$obj;
+            if(string_is_integer($obj)){
+                return new \DateTime((int)$obj);
+            }
+            elseif(!empty($format)){
+                return date_create_from_format($format, $obj);
+            }
+            else{
+                foreach ($default_formats as $dateFormat) {
+                    $date = date_create_from_format($dateFormat, $obj);
+                    if($date){
+                        return $date;
+                    }
+                }
+            }
+        }
+    }
+    elseif(class_exists($to_class)){
         $obj_in = serialize($obj);
         $obj_out = 'O:' . strlen($to_class) . ':"' . $to_class . '":' . substr($obj_in, $obj_in[2] + 7);
         return unserialize($obj_out);
     }
     else return false;
+}
+
+function string_is_integer($subject){
+    return \preg_match("/^[0-9]+$/", $subject);
 }
 
 /**
@@ -189,9 +215,18 @@ function to_key_value_pair($array, $escape = false){
     $result = "";
     foreach($array as $key => $value){
         if($escape){
-            $result += "$key='" . htmlspecialchars($value) . "' ";
+            $result .= "$key='" . htmlspecialchars($value) . "' ";
         }
-        else $result += "$key='$value' ";
+        else $result .= "$key='$value' ";
     }
     return \trim($result);
+}
+
+function get_attributes($object, $flags = \ReflectionProperty::IS_PUBLIC){
+    $result = array();
+    $class = new \ReflectionClass(\get_class($object));
+    foreach($class->getProperties($flags) as $property){
+        $result[] = $property->getName();
+    }
+    return $result;
 }

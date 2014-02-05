@@ -1,6 +1,7 @@
 <?php
 require_once("Util.php");
 define("PROTO_BASE_DIR", dirname(dirname(__FILE__)));
+
 $loaders = array(
     new ClassLoader("ProtoMapper\Binds", PROTO_BASE_DIR),
     new ClassLoader("ProtoMapper\Config", PROTO_BASE_DIR),
