@@ -45,7 +45,7 @@ class DelimitedParser
         foreach($results as $result){
             if(!empty($result)){
                 //call 'new' for non-scalar types and create the instances
-                if(!is_scalar_type($this->type)){
+                if(!\is_scalar_type($this->type)){
                     $item = set_value(new $this->type, $target, $result);
                     $this->results[] = $item;
                 }

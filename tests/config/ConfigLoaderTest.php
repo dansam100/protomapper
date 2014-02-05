@@ -18,7 +18,7 @@ class ConfigLoaderTest extends \PHPUnit_Framework_TestCase {
     protected function setUp() {
         //BEGIN: test loading using the configuration file in "/examples/protocol.config.xml"
         $this->object = new ConfigLoader();
-		$this->xmlFile = '..//examples//protocol.config.xml';
+        $this->xmlFile = '..//examples//protocol.config.xml';
     }
 
     /**
@@ -41,30 +41,29 @@ class ConfigLoaderTest extends \PHPUnit_Framework_TestCase {
         $xml = \simplexml_load_file($this->xmlFile);
         $configMappings = $xml->xpath("//mapping");
         $this->assertEquals(count($configMappings), count($definition->mappings()));
-		foreach($definition->mappings() as $loadedMapping){
-			$mappingConfigs = $xml->xpath("//mapping[@name='{$loadedMapping->name()}']");
+        foreach ($definition->mappings() as $loadedMapping) {
+            $mappingConfigs = $xml->xpath("//mapping[@name='{$loadedMapping->name()}']");
             $this->assertTrue(!empty($mappingConfigs));
-			foreach($mappingConfigs as $mapping){
-				$this->assertEquals((string)$mapping['name'], $loadedMapping->name());
-				$this->assertEquals((string)$mapping['type'], $loadedMapping->type());
-                foreach($loadedMapping->bindings() as $loadedBinding){
+            foreach ($mappingConfigs as $mapping) {
+                $this->assertEquals((string) $mapping['name'], $loadedMapping->name());
+                $this->assertEquals((string) $mapping['type'], $loadedMapping->type());
+                foreach ($loadedMapping->bindings() as $loadedBinding) {
                     $bindConfigs = $mapping->xpath("bind[@source='{$loadedBinding->source()}' and @target='{$loadedBinding->target()}']");
-					$this->assertTrue(!empty($bindConfigs));
-					foreach($bindConfigs as $bindConfig){
-						$this->assertEquals((string)$bindConfig['source'], $loadedBinding->source());
-						$this->assertEquals((string)$bindConfig['target'], $loadedBinding->target());
-                        if(!empty($bindConfig['type'])){
-                            $this->assertEquals((string)$bindConfig['type'], $loadedBinding->type());
-                        }
-						else{
+                    $this->assertTrue(!empty($bindConfigs));
+                    foreach ($bindConfigs as $bindConfig) {
+                        $this->assertEquals((string) $bindConfig['source'], $loadedBinding->source());
+                        $this->assertEquals((string) $bindConfig['target'], $loadedBinding->target());
+                        if (!empty($bindConfig['type'])) {
+                            $this->assertEquals((string) $bindConfig['type'], $loadedBinding->type());
+                        } else {
                             $this->assertEquals($loadedBinding->type(), \ProtoMapper\Binds\ProtocolBind::DEFAULT_TYPE);
                         }
-						if(!empty($bindConfig['parser'])){
-                            $this->assertEquals((string)$bindConfig['parser'], $loadedBinding->parser());
+                        if (!empty($bindConfig['parser'])) {
+                            $this->assertEquals((string) $bindConfig['parser'], $loadedBinding->parser());
                         }
-					}
+                    }
                 }
-			}
-		}
+            }
+        }
     }
 }
