@@ -90,8 +90,8 @@ class ProtocolBind
         }
         else{
             self::$bind_cache[get_class($object)] = array();
-            return self::$bind_cache[get_class($object)][] = $object;
         }
+        return self::$bind_cache[get_class($object)][] = $object;
     }
 
 
