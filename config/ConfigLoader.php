@@ -56,7 +56,7 @@ class ConfigLoader
             (string)$bind['format'],
             (string)$bind['parser'],
             ($bind->getName() == 'make'),
-            array_map(array($this, 'createBinding'), $bind->xpath('data/bind'))
+            array_map(array($this, 'createBinding'), $bind->xpath('data/bind|data/make'))
         );
     }
     
