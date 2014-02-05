@@ -56,14 +56,9 @@ function cast($obj, $to_class, $format = null)
         return (float)((string)$obj);
     }
     elseif($to_class == 'boolean' || $to_class == 'bool'){
-        if(is_bool($obj)){
-            return $obj;
-        }
+        if(is_bool($obj)){ return $obj;}
         $val = (string)$obj;
         switch (strtolower($val)){
-            case "true":
-            case "1":
-                return true;
             case "false":
             case "0":
                 return false;
@@ -179,21 +174,18 @@ function set_value($object, $attribute, $value){
         }
         elseif(property_exists($object, $attribute)){
             if(is_collection($object->$attribute)){
-                //add arrays entry by entry
-                if(is_collection($value)){
+                if(is_collection($value)){   //add arrays entry by entry
                     foreach($value as $entry){
                         $object->{$attribute}[] = $entry;
                     }
                 }
-                //adding a single value
                 else{
-                    $object->{$attribute}[] = $value;
+                    $object->{$attribute}[] = $value;   //adding a single value
                 }
             }
             else{
-                //if the target does not expect an array and yet given one, use only the first entry
                 if(is_collection($value) && !empty($value)){
-                    $object->$attribute = $value[0];
+                    $object->$attribute = $value[0];     //if the target does not expect an array and yet given one, use only the first entry
                 }
                 else{
                     $object->$attribute = $value;
