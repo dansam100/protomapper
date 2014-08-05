@@ -3,7 +3,7 @@
 
 The purpose of this project is two-fold.<br/>
 1.	To be a nexus between various types of "data providing protocols" and your project. PHP needs a standard way of interfacing and reading data from protocols like oAuth.  
-2.	An ORM for establishing various kinds of mappings between objects and other objects, xml documents and objects, etc.
+2.	An internal mapper for establishing various kinds of relationships between objects and other objects, xml documents and objects, etc.
 
 ##synopsis##
 1.	See <http://www.github.com/dansam100/protomapper/tree/master/tests/config/ConfigLoaderTest.php> for a sample of how to initialize protomapper from configuration.
